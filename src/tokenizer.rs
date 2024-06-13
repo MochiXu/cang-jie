@@ -40,18 +40,14 @@ impl ::tantivy::tokenizer::Tokenizer for CangJieTokenizer {
                     .1
             }
         };
-        println!("origin: {:?}", text);
-        println!("chinese: {:?}", result);
         let result = result
             .iter()
             .flat_map(|s| {
                 s.split(|c: char| !c.is_alphanumeric())
-                    // .map(|substr| substr.to_string())
                     .filter(|substr| !substr.is_empty())
                     .collect::<Vec<&str>>()
             })
             .collect();
-        println!("en-ZH: {:?}\n",result);
         trace!("{:?}->{:?}", text, result);
         CangjieTokenStream::new(text, result)
     }
