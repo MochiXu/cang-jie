@@ -1,6 +1,6 @@
 use crate::{options::TokenizerOption, stream::CangjieTokenStream};
 use jieba_rs::Jieba;
-use log::trace;
+use log::{trace};
 use std::sync::Arc;
 
 #[derive(Clone, Debug)]
@@ -40,6 +40,14 @@ impl ::tantivy::tokenizer::Tokenizer for CangJieTokenizer {
                     .1
             }
         };
+        let result = result
+            .iter()
+            .flat_map(|s| {
+                s.split(|c: char| !c.is_alphanumeric())
+                    .filter(|substr| !substr.is_empty())
+                    .collect::<Vec<&str>>()
+            })
+            .collect();
         trace!("{:?}->{:?}", text, result);
         CangjieTokenStream::new(text, result)
     }
